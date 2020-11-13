@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { FeedItem } from '../models/FeedItem';
 import { requireAuth } from '../../users/routes/auth.router';
 import * as AWS from '../../../../aws';
+import { where } from 'sequelize';
 
 
 const router: Router = Router();
@@ -21,13 +22,13 @@ router.get('/', async (req: Request, res: Response) => {
 //Add an endpoint to GET a specific resource by Primary Key
 router.get('/:id', async (req: Request, res: Response) => {
     //assign id to variable
-    const idnum = req.query.id;
+    const idnum: number = parseInt(req.query.id.toString());
     //check if id is empty
     if (!idnum) {
         return res.status(400).send('id required');
     }
     //find item by primary key
-    const item = await FeedItem.findByPk(idnum);
+    const item: FeedItem = await FeedItem.findByPk(idnum);
     //check if item was found
     if (!item) {
         return res.status(404).send('id not found');
@@ -39,25 +40,40 @@ router.get('/:id', async (req: Request, res: Response) => {
 // update a specific resource
 router.patch('/:id', async (req: Request, res: Response) => {
         //@TODO try it yourself
-        let idnum = req.query.id;
-        console.log(idnum);
+        const idnum: number = parseInt(req.query.id.toString());
+        
+        if(!idnum) {
+            return res.status(400).send("id required")
+        }
+
         const caption = req.body.caption;
         const fileName = req.body.url;
-        console.log(caption);
-        console.log(fileName);
-        // check Caption is valid
-        if (!caption) {
-            return res.status(400).send({ message: 'Caption is required or malformed' });
+
+        //find item by primary key
+        let item: FeedItem = await FeedItem.findByPk(idnum);
+        //check if item exists
+        if(!item) {
+            return res.status(404).send("id not found")
+        }
+        // check if params were passed
+        if (!caption && !fileName) {
+            return res.status(400).send("nothing to update");
         }
     
-        // check Filename is valid
-        if (!fileName) {
-            return res.status(400).send({ message: 'File url is required' });
+        if(caption) {
+            FeedItem.update({
+                caption: caption
+            }, {where: {id: idnum}})
         }
 
-   
+        if(fileName) {
+            FeedItem.update({
+                url: fileName
+            }, {where: {id: idnum}})
+            .then((result) => {console.log(result);});
+        }
 
-        res.send(500).send("not implemented")
+        res.status(200).send("update complete");
 });
 
 
