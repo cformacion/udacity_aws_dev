@@ -3,6 +3,7 @@ import { FeedItem } from '../models/FeedItem';
 import { requireAuth } from '../../users/routes/auth.router';
 import * as AWS from '../../../../aws';
 
+
 const router: Router = Router();
 
 // Get all feed items
@@ -18,12 +19,44 @@ router.get('/', async (req: Request, res: Response) => {
 
 //@TODO
 //Add an endpoint to GET a specific resource by Primary Key
+router.get('/:id', async (req: Request, res: Response) => {
+    //assign id to variable
+    const idnum = req.query.id;
+    //check if id is empty
+    if (!idnum) {
+        return res.status(400).send('id required');
+    }
+    //find item by primary key
+    const item = await FeedItem.findByPk(idnum);
+    //check if item was found
+    if (!item) {
+        return res.status(404).send('id not found');
+    }
+
+    res.send(item);
+});
 
 // update a specific resource
-router.patch('/:id', 
-    requireAuth, 
-    async (req: Request, res: Response) => {
+router.patch('/:id', async (req: Request, res: Response) => {
         //@TODO try it yourself
+        let idnum = req.query.id;
+        console.log(idnum);
+        const caption = req.body.caption;
+        const fileName = req.body.url;
+        console.log(caption);
+        console.log(fileName);
+        // check Caption is valid
+        if (!caption) {
+            return res.status(400).send({ message: 'Caption is required or malformed' });
+        }
+    
+        // check Filename is valid
+        if (!fileName) {
+            return res.status(400).send({ message: 'File url is required' });
+        }
+
+   
+
         res.send(500).send("not implemented")
 });
 
