@@ -6,6 +6,7 @@ import { IndexRouter } from './controllers/v0/index.router';
 import bodyParser from 'body-parser';
 
 import { V0MODELS } from './controllers/v0/model.index';
+//require('dotenv').config({ path: '/Users/cherieformacion/Documents/Udacity_AWS_Dev/cloud-developer/course-02/exercises/udacity-c2-restapi/.env' });
 
 (async () => {
   await sequelize.addModels(V0MODELS);
