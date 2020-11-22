@@ -22,7 +22,8 @@ router.get('/', async (req: Request, res: Response) => {
 //Add an endpoint to GET a specific resource by Primary Key
 router.get('/:id', async (req: Request, res: Response) => {
     //assign id to variable
-    const idnum: number = parseInt(req.query.id.toString());
+    //const idnum: number = parseInt(req.query.id.toString());
+    const idnum = req.params.id;
     //check if id is empty
     if (!idnum) {
         return res.status(400).send('id required');
@@ -40,7 +41,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // update a specific resource
 router.patch('/:id', async (req: Request, res: Response) => {
         //@TODO try it yourself
-        const idnum: number = parseInt(req.query.id.toString());
+        const idnum = req.params.id;
         
         if(!idnum) {
             return res.status(400).send("id required")
@@ -69,8 +70,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
         if(fileName) {
             FeedItem.update({
                 url: fileName
-            }, {where: {id: idnum}})
-            .then((result) => {console.log(result);});
+            }, {where: {id: idnum}});
         }
 
         res.status(200).send("update complete");

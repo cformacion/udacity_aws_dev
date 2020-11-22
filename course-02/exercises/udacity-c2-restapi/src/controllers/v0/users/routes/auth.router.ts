@@ -17,9 +17,7 @@ async function generatePassword(plainTextPassword: string): Promise<string> {
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(plainTextPassword, salt);
-
     return hash;
-
 }
 
 async function comparePasswords(plainTextPassword: string, hash: string): Promise<boolean> {
@@ -29,7 +27,7 @@ async function comparePasswords(plainTextPassword: string, hash: string): Promis
 
 function generateJWT(user: User): string {
     //@TODO Use jwt to create a new JWT Payload containing
-    return jwt.sign(user, config.jwt.secret);
+    return jwt.sign({user: user}, config.jwt.secret);
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
@@ -95,6 +93,7 @@ router.post('/login', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
     const email = req.body.email;
     const plainTextPassword = req.body.password;
+
     // check email is valid
     if (!email || !EmailValidator.validate(email)) {
         return res.status(400).send({ auth: false, message: 'Email is required or malformed' });
@@ -109,10 +108,11 @@ router.post('/', async (req: Request, res: Response) => {
     const user = await User.findByPk(email);
     // check that user doesnt exists
     if(user) {
-        return res.status(422).send({ auth: false, message: 'User may already exist' });
+        return res.status(201).send({ auth: false, message: 'User may already exist' });
     }
 
     const password_hash = await generatePassword(plainTextPassword);
+    
 
     const newUser = await new User({
         email: email,

@@ -193,8 +193,8 @@
 							"script": {
 								"id": "4fa0ec55-4fb1-4eda-a7a3-08af62324ede",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
 									"});",
 									"",
 									"pm.test(\"A single item is returned\", function () {",
@@ -202,8 +202,8 @@
 									"    pm.expect(jsonData.id).to.not.eql(null);",
 									"});",
 									"",
-									"pm.test(\"Response time is less than 200ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"pm.test(\"Response time is less than 300ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(300);",
 									"});"
 								],
 								"type": "text/javascript"
