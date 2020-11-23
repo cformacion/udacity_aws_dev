@@ -2,13 +2,15 @@ import { Router, Request, Response } from 'express';
 
 import { User } from '../models/User';
 
-import * as bcrypt from 'bcrypt';
+//import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { NextFunction } from 'connect';
 
 import * as EmailValidator from 'email-validator';
 import { result } from 'lodash';
 import { config } from '../../../../config/config';
+
+const bcrypt = require('bcryptjs');
 
 const router: Router = Router();
 
